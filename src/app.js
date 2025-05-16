@@ -1,8 +1,8 @@
 import express from "express"
-import UserRouter from "./routes/RegisterRoutes.js"
+import RegisterRoutesRouter from "./routes/RegisterRoutes.js"
 
 const app = express()
  app.use(express.json())
- app.use("/user",UserRouter)
+ app.use("/register",RegisterRoutesRouter)
 
  export default app 
