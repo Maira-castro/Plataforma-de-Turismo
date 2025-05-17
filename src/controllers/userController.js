@@ -33,36 +33,3 @@ export const postRegisterTourist = async (req, res) => {
         })
     }
 }
-
-export const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body; //passo o email e senha 
-    
-        const usuario = await prisma.user.findUnique({ where: { email } });// Verifica se o usuário existe com base no email
-
-        if (!usuario) {
-            return res.status(401).json({ message: "email inválidas!" });
-        }//se nao encontrar usuario
-    
-        const senhaValida = await bcrypt.compare(password, usuario.password);// Compara a senha fornecida com a senha hasheada do banco
-
-        if (!senhaValida) {
-            return res.status(401).json({ message: "senha inválidas!" });
-        }//se as senhas não estiverem iguais
-
-        const token = generateToken(usuario);// Gera o token JWT
-
-        res.status(200).json({
-            message: "Login realizado com sucesso!",
-            usuario:{name:usuario.name,email:usuario.email},
-            token: token,
-        });
-        
-        
-    } catch (error) {
-        res.status(500).json({
-            message: "Erro ao fazer login",
-            detalhes: `${error.message}\n${error.stack}`,
-        });
-    }
-};

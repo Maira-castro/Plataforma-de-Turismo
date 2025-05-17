@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt' //AQUI SERA FEITA A CRIPTOGRAFIA DA SENHA
 import jwt from 'jsonwebtoken' //GERAÇÃO DE TOKEN
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient()
 import dotenv from 'dotenv' //carrega as variáveis do arquivo .env para o process.env. Sem ela, process.env.JWT_SECRET será undefined.
 dotenv.config()
 
@@ -38,9 +40,24 @@ export function authenticate(req, res, next) {
 	"exp": 1747165463
 }}*/
         // req.userId = tokenG.id;//aqui pega o id do usuario
-        req.user = tokenG
+        req.user = tokenG //irei usar para validar o admin
         next();// se tudo dê certo, vai para a próxima etapa/middlleware
     } catch (error) {
         return res.status(403).json({ message: 'token invalido ou expirado' });
     }
 };
+
+export async function authorizeAdmin(req, res, next) {
+    try {
+        const { email } = req.user; // req.user vem do middleware authenticate
+        const admin = await prisma.admin.findUnique({ where: { email } });
+
+        if (!admin) {
+            return res.status(403).json({ message: 'Acesso restrito a administradores' });
+        }
+
+        next(); // Se é admin, continua para a rota
+    } catch (error) {
+        return res.status(500).json({ message: 'Erro na verificação de administrador' });
+    }
+}

@@ -59,7 +59,7 @@ export const putUpdatePlace = async (req, res) => {
     }
 }
 
-//ROTA PARA DELETAR LOCAL
+//DELETA LOCAL
 export const deletePlace = async (req, res) => {
     const id = parseInt(req.params.id)
     try {
