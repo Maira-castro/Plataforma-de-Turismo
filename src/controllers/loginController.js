@@ -1,34 +1,23 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient()
-import bcrypt from 'bcrypt'
-import {generateToken} from '../utils/auth.js'
+import { LoginService } from "../services/loginService.js";
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
+    try {
 
-    let usuario = await prisma.user.findUnique({ where: { email } });
-    let tipo = "user";
+        const usuario = await LoginService(email, password)
 
-    if (!usuario) {
-        // Se não achou em user, tenta em admin
-        usuario = await prisma.admin.findUnique({ where: { email } });
-        tipo = "admin";
+        res.status(200).json({
+            message: "Login realizado com sucesso!",
+            usuario: { name: usuario.name, email: usuario.email, tipo: usuario.tipo },
+            token: usuario.token,
+        });
+    } catch (error) {
+        if (error.message === "Credenciais não encontradas!") {
+            return res.status(401).json({ message: error.message });
+        }
+        res.status(500).json({
+            message: "erro ao fazer login!",
+            error: error.message
+        })
     }
-
-    if (!usuario) {
-        return res.status(401).json({ message: "Credenciais não encontradas!" });
-    }
-
-    const senhaValida = await bcrypt.compare(password, usuario.password);
-    if (!senhaValida) {
-        return res.status(401).json({ message: "Credenciais não encontradas!" });
-    }
-
-    const token = generateToken(usuario); // Gera o token JWT
-
-    res.status(200).json({
-        message: "Login realizado com sucesso!",
-        usuario: { name: usuario.name, email: usuario.email, tipo },
-        token: token,
-    });
 };
