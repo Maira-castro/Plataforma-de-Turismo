@@ -14,21 +14,22 @@ export async function LoginService(email, password) {
     }
 
     if (!usuario) {
-        throw new Error("Credenciais não encontradas!");
+        throw new Error("Email ou senha inválidos!");//gera um erro personalizado  que será tratado no catch
     }
 
     const senhaValida = await bcrypt.compare(password, usuario.password);
     if (!senhaValida) {
-        throw new Error("Credenciais não encontradas!");
+        throw new Error("Email ou senha inválidos!");
     }
 
     const token = generateToken(usuario); // Gera o token JWT
 
     return {
-        name: usuario.name, email: usuario.email, tipo, token
+        name:usuario.name,email,token
     }
 }
 
+//FUNÇÃO PARA VERIFICAR SE EMAIL JA EXISTE ANTES DE CADASTRAR
 export async function existeEmail(email) {
     const user = await prisma.user.findUnique({
         where: { email }

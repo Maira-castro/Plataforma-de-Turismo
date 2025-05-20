@@ -34,12 +34,11 @@ export function authenticate(req, res, next) {
     try {
         //verifica se o token é valido, adiciona os dados decodificados do token na requisição
         const tokenG = jwt.verify(token, JWT_SECRET);/*retorna as informações do usuario dono do token {ex:{
-	"id": 37,
-	"email": "ysadora@gmail.com",
+	"id": 40,
+	"email": "emailTeste@gmail.com",
 	"iat": 1747161863,
 	"exp": 1747165463
 }}*/
-        // req.userId = tokenG.id;//aqui pega o id do usuario
         req.user = tokenG //irei usar para validar o admin
         next();// se tudo dê certo, vai para a próxima etapa/middlleware
     } catch (error) {
