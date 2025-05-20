@@ -3,9 +3,7 @@ import { LoginService } from "../services/loginService.js";
 export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
-
         const usuario = await LoginService(email, password)
-
         res.status(200).json({
             message: "Login realizado com sucesso!",
             usuario: { name: usuario.name, email: usuario.email, tipo: usuario.tipo },

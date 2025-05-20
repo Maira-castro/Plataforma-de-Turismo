@@ -52,11 +52,11 @@ export async function authorizeAdmin(req, res, next) {
         const { email } = req.user; // req.user vem do middleware authenticate
         const admin = await prisma.admin.findUnique({ where: { email } });
 
-        if (!admin) {
+        if (!admin) { 
             return res.status(403).json({ message: 'Acesso restrito a administradores' });
         }
 
-        next(); // Se é admin, continua para a rota
+        next(); // Se é admin vai para o proximo
     } catch (error) {
         return res.status(500).json({ message: 'Erro na verificação de administrador' });
     }

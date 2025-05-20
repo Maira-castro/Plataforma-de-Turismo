@@ -1,5 +1,4 @@
 import { createPlaces, DeletePlace, returnPlaces, returnPlacesByType, updatePlaces } from "../services/placeService.js";
-import bcrypt from 'bcrypt'
 //CRIAÇÃO DE LOCAIS
 export const postCreatePlace = async (req, res) => {
     const { name, description, address, type, rating } = req.body
